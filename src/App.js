@@ -9,7 +9,8 @@ import CountryPicker from './components/CountryPicker/CountryPicker'
 class App extends Component {
   state = {
     data : {},
-    daily : {}
+    daily : [],
+    countries : []
   }
 
   async componentDidMount(){
@@ -21,15 +22,19 @@ class App extends Component {
 
     const dailyData = await (await fetch('https://covid19.mathdro.id/api/daily')).json()
     this.setState({daily : dailyData})
+    
+    const {countries} = await (await fetch('https://covid19.mathdro.id/api/countries')).json()
+    this.setState({countries : countries})
+    console.log(countries)
 
   }
 
   render() {
-    const { data,daily } = this.state
+    const { data,daily,countries } = this.state
     return (
       <div className={styles.container}>
         <Cards data={data}/>
-        <CountryPicker/>
+        <CountryPicker countries={countries}/>
         <Charts daily={daily} />
       </div>
     )

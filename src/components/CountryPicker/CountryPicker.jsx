@@ -1,10 +1,18 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { NativeSelect, FormControl } from '@material-ui/core';
 
-const CountryPicker = () => {
+import styles from './CountryPicker.module.css'
+
+const CountryPicker = ({countries}) => {
+  
+
     return (
-        <div>
-            CountryPicker
-        </div>
+        <FormControl className={styles.FormControl}>
+            <NativeSelect>
+                <option value='global'> Global </option>
+                {countries.map((country,i)=> <option key={i} value={country.name}> {country.name} </option>)}
+            </NativeSelect>
+        </FormControl>
     )
 }
 
