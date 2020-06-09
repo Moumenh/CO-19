@@ -6,11 +6,14 @@ import Cards from './components/Cards/Cards'
 import Charts from './components/Charts/Charts'
 import CountryPicker from './components/CountryPicker/CountryPicker'
 
+import co19 from './assets/co19.png'
+
 class App extends Component {
   state = {
     data : {},
     daily : [],
-    countries : []
+    countries : [],
+    country : ''
   }
 
   async componentDidMount(){
@@ -25,17 +28,30 @@ class App extends Component {
     
     const {countries} = await (await fetch('https://covid19.mathdro.id/api/countries')).json()
     this.setState({countries : countries})
-    console.log(countries)
 
   }
 
+  handleCountryChange = async (country) => {
+    if(country === 'global') {
+      this.componentDidMount()
+    }
+    else{
+      const countryData = await (await fetch(`https://covid19.mathdro.id/api/countries/${country}`)).json()
+      const { confirmed, recovered, deaths, lastUpdate } = countryData
+      const fetchedcountry = { confirmed, recovered, deaths, lastUpdate }
+
+      this.setState({ data: fetchedcountry, country })
+    }
+  }
+
   render() {
-    const { data,daily,countries } = this.state
+    const { data,daily,countries,country } = this.state
     return (
       <div className={styles.container}>
+        <img className={styles.image} alt='CO-19' src={co19} />
         <Cards data={data}/>
-        <CountryPicker countries={countries}/>
-        <Charts daily={daily} />
+        <CountryPicker countries={countries} handleCountryChange={this.handleCountryChange}/>
+        <Charts daily={daily} data={data} country={country}/>
       </div>
     )
   }
